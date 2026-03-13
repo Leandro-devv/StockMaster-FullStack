@@ -2,8 +2,7 @@
    CONFIGURAÇÃO INICIAL E CARREGAMENTO DE DADOS
 ========================================================================== */
 const formulario = document.getElementById('form-cadastro');
-const dadosSalvos = localStorage.getItem('estoque_master');
-const inventario = dadosSalvos ? JSON.parse(dadosSalvos) : [];
+let inventario = [];
 /* ==========================================================================
    NAVEGAÇÃO ENTRE ABAS (CADASTRO VS CONSULTA)
 ========================================================================== */
@@ -60,102 +59,114 @@ document.getElementById('consultaItem').addEventListener('change', mostraCamposC
 /* ==========================================================================
    PROCESSAMENTO DO FORMULÁRIO E PERSISTÊNCIA (SALVAR)
 ========================================================================== */
+formulario.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-formulario.addEventListener('submit', (event) => {
-    event.preventDefault(); 
-    
     const ItemSelecionado = document.getElementById('tipoItem').value;
     const quantidade = Number(document.getElementById('quantidade').value);
 
     let novoItem = {};
-    
+
     if (ItemSelecionado === 'broca') {
-        let tipoBroca = document.getElementById('tipoBroca').value;
         novoItem = {
-            categoria : ItemSelecionado,
-            tipo : tipoBroca,
-            quantidade : quantidade
+            nome_categoria: ItemSelecionado,
+            tipo: document.getElementById('tipoBroca').value,
+            quantidade: quantidade
         };
     } else if (ItemSelecionado === 'fresa') {
-        let tipoFresa = document.getElementById('tipoFresa').value;
         novoItem = {
-            categoria : ItemSelecionado,
-            tipo : tipoFresa,
+            nome_categoria: ItemSelecionado,
+            tipo: document.getElementById('tipoFresa').value,
             quantidade: quantidade
         };
     } else if (ItemSelecionado === 'material') {
-        let tipomaterial = document.getElementById('tipoMaterial').value;
-        let diametro = Number(document.getElementById('diametroBarras').value);
-        let metros = Number(document.getElementById('metrosBarras').value);
-        
         novoItem = {
-            categoria: ItemSelecionado,
-            tipo: tipomaterial,
-            diametro: diametro,
-            metros: metros,
+            nome_categoria: ItemSelecionado,
+            tipo: document.getElementById('tipoMaterial').value,
+            diametro: Number(document.getElementById('diametroBarras').value),
+            metro: Number(document.getElementById('metrosBarras').value),
             quantidade: quantidade
         };
     }
 
-    // Validação e Salvamento
     if (ItemSelecionado != '') {
-        // Adiciona ao Array na memória RAM
-        inventario.push(novoItem);
-        
-        // Salva o Array atualizado no LocalStorage (Transforma em String JSON)
-        localStorage.setItem('estoque_master', JSON.stringify(inventario));
+        try {
+            const resposta = await fetch('/produtos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(novoItem)
+            });
 
-        // Limpeza da Interface
-        formulario.reset();
-        const todosOsGrupos = document.querySelectorAll('[data-grupo="cadastro"]');
-        todosOsGrupos.forEach(g => g.classList.add('hidden'));
+            if (resposta.ok) {
+                alert("Sucesso! Item guardado no estoque.");
+                formulario.reset();
 
-        console.log("Sucesso! Veja seu inventário:", inventario);
+                document.querySelectorAll('[data-grupo="cadastro"]').forEach(g => g.classList.add('hidden'));
+            } else {
+                alert("Erro ao salvar no banco de dados.");
+            }
+        } catch (error) {
+            console.error("Erro na comunicação com o servidor:", error);
+            alert("O servidor parece estar desligado.");
+        }
     } else {
         alert("Selecione o que deseja cadastrar!");
     }
 });
+
+/* ========================================================================== 
+    SISTEMA DE BUSCA E EXIBIÇÃO (CONSULTA) 
+========================================================================== */
 /* ========================================================================== 
     SISTEMA DE BUSCA E EXIBIÇÃO (CONSULTA) 
 ========================================================================== */
 const btnConsulta = document.getElementById('btn-pesquisar');
 
-btnConsulta.addEventListener('click',()=>{
+btnConsulta.addEventListener('click', async () => {
     const itemConsulta = document.getElementById('consultaItem').value;
     const resultadoInventario = document.getElementById('container-resultados-lista');
     let tipoItem;
-    
-    resultadoInventario.innerHTML = '';
-    
-    if(itemConsulta != ''){
-        const conteudoResposta = document.querySelector('.conteudo-resposta')
-        
-        if(itemConsulta === 'broca'){
-            tipoItem = document.getElementById('consultaTipoQuantidadeBroca').value
-        }else if(itemConsulta === 'fresa'){
-            tipoItem = document.getElementById('consultaQuantidadetipoFresa').value
-        }else if(itemConsulta ==='material'){
-            tipoItem = document.getElementById('consultaTipoQuantidadeMateriaPrima').value
+
+    resultadoInventario.innerHTML = 'Pesquisando...';
+
+    if (itemConsulta != '') {
+        try {
+
+            const resposta = await fetch('/produtos');
+            const inventarioDoBanco = await resposta.json();
+
+            const conteudoResposta = document.querySelector('.conteudo-resposta');
+
+            if (itemConsulta === 'broca') {
+                tipoItem = document.getElementById('consultaTipoQuantidadeBroca').value;
+            } else if (itemConsulta === 'fresa') {
+                tipoItem = document.getElementById('consultaQuantidadetipoFresa').value;
+            } else if (itemConsulta === 'material') {
+                tipoItem = document.getElementById('consultaTipoQuantidadeMateriaPrima').value;
+            }
+
+            let itensEncontrados = inventarioDoBanco.filter(item =>
+                item.nome_categoria === itemConsulta && item.tipo === tipoItem
+            );
+
+            const quantidadeTotal = itensEncontrados.reduce((acumulador, itemAtual) => {
+                return acumulador + Number(itemAtual.quantidade);
+            }, 0);
+
+            resultadoInventario.innerHTML = `
+                <p><strong>Tipo:</strong> ${tipoItem}</p>
+                <p><strong>Total em Estoque:</strong> ${quantidadeTotal}</p>
+                ${itensEncontrados[0]?.diametro > 0 ? `<p><strong>Diâmetro:</strong> ${itensEncontrados[0].diametro}mm</p>` : ''}
+                ${itensEncontrados[0]?.metro > 0 ? `<p><strong>Metros:</strong> ${itensEncontrados[0].metro}m</p>` : ''}
+            `;
+
+            conteudoResposta.classList.remove('hidden');
+
+        } catch (error) {
+            console.error("Erro na consulta:", error);
+            alert("Erro ao buscar dados do servidor.");
         }
-        
-        let itemEncontrado = inventario.filter(item => item.categoria === itemConsulta && item.tipo === tipoItem)
-
-        const quantidadeItem = itemEncontrado.reduce((acumulador,itemAtual) => {
-            return acumulador + Number(itemAtual.quantidade);
-        },0);
-
-    
-        resultadoInventario.innerHTML += `
-        <p><strong>Item:</strong> ${itemConsulta}</p>
-        <p><strong>Tipo:</strong> ${tipoItem}</p>
-        <p><strong>Quantidade:</strong> ${quantidadeItem}</p>
-        ` 
-        conteudoResposta.classList.remove('hidden');
-
-    }else {
-        alert("Selecione o que deseja consultar!")
+    } else {
+        alert("Selecione o que deseja consultar!");
     }
-
-   
 });
-
