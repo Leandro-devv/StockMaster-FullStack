@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockMaster</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="main-container">
+        <h1>StockMaster</h1>
+        <section class="container-cadastro-consulta">
+            <!----------------------------Menu Navegação----------------------------->
+            <header>
+                <nav class="nav-list">
+                    <span id="btn-cadastro" class="active">Cadastro</span>
+                    <span id="btn-consulta">Consulta</span>
+                </nav>
+            </header>
+            <!----------------------------Formulario Cadastro----------------------------->
+            <article class="container-form-cadastro" id="aba-cadastro">
+                <form action="" id="form-cadastro">
+                    <fieldset>
+                        <legend>Entrada de Material</legend>
+
+                        <label for="tipoItem">Qual item deseja cadastrar?</label>
+                        <select id="tipoItem">
+                            <option value="">Selecione...</option>
+                            <option value="broca">Broca</option>
+                            <option value="fresa">Fresa</option>
+                            <option value="material">Matéria-prima</option>
+                        </select>
+
+                        <div id="cadastro-broca" data-grupo="cadastro" class="hidden">
+                            <label for="tipoBroca">Tipo da Broca</label>
+                            <select id="tipoBroca">
+                                <option value="acoRapido">Aço Rápido</option>
+                                <option value="metalDuro">Metal Duro</option>
+                            </select>
+                        </div>
+
+                        <div id="cadastro-fresa" data-grupo="cadastro" class="hidden">
+                            <label for="tipoFresa">Tipo da Fresa</label>
+                            <select id="tipoFresa">
+                                <option value="topo">Topo Reto</option>
+                                <option value="esferica">Esférica</option>
+                            </select>
+                        </div>
+                        <div id="cadastro-material" data-grupo="cadastro" class="campos-material hidden">
+                            <label for="tipoMaterial">Tipo da materiaprima</label>
+                            <select id="tipoMaterial">
+                                <option value="acoCarbono">Aço Carbono</option>
+                                <option value="acoInox">Aço Inox</option>
+                                <option value="aluminio">Aluminio</option>
+                            </select>
+                            <label for="diametroBarras">Diametro</label>
+                            <input type="number" name="diametroBarras" id="diametroBarras">
+                            <label for="metrosBarras">Metros</label>
+                            <input type="number" name="metrosBarras" id="metrosBarras">
+                        </div>
+
+                        <label for="quantidade">Quantidade</label>
+                        <input type="number" name="quantidade" id="quantidade">
+
+                        <button type="submit" id="btn-salvarInventario">Salvar no Inventário</button>
+                    </fieldset>
+                </form>
+            </article>
+            <!----------------------------Formulario Consulta----------------------------->
+            <article class="container-consulta hidden" id="aba-consulta">
+                <form action="">
+                    <fieldset>
+                        <legend>Consultar</legend>
+                        <label for="consultaItem">Item</label>
+                        <select name="consultaItem" id="consultaItem">
+                            <option value="">Selecione...</option>
+                            <option value="broca">Broca</option>
+                            <option value="fresa">Fresa</option>
+                            <option value="material">Matéria-prima</option>
+                        </select>
+                        <div id="consulta-broca" data-grupo="consulta" class="hidden">
+                            <label for="consultaTipoQuantidadeBroca">Tipo da Fresa</label>
+                            <select id="consultaTipoQuantidadeBroca">
+                                <option value="acoRapido">Aço Rapido</option>
+                                <option value="metalDuro">Metal Duro</option>
+                            </select>
+                        </div>
+                        <div id="consulta-fresa" data-grupo="consulta" class=" hidden">
+                            <label for="consultaQuantidadetipoFresa">Tipo da Fresa</label>
+                            <select id="consultaQuantidadetipoFresa">
+                                <option value="topo">Topo Reto</option>
+                                <option value="esferica">Esférica</option>
+                            </select>
+                        </div>
+                        <div id="consulta-material" data-grupo="consulta" class="hidden">
+                            <label for="consultaTipoQuantidadeMateriaPrima">Tipo Materia Prima</label>
+                            <select id="consultaTipoQuantidadeMateriaPrima">
+                                <option value="acoCarbono">Aço Carbono</option>
+                                <option value="acoInox">Aço Inox</option>
+                                <option value="aluminio">Aluminio</option>
+                            </select>
+                        </div>
+
+                        <button type="button" id="btn-pesquisar">Pesquisar no Inventário</button>
+                        <div class="conteudo-resposta hidden">
+                            <div id="container-resultados-lista" class="container-resultado-inventario ">
+
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </article>
+        </section>
+    </main>
+    <script src="index.js"></script>
+</body>
+
+</html>

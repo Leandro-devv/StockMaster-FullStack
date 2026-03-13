@@ -1,0 +1,211 @@
+/*============================= Resets ==============================*/
+:root {
+  /* Cores de Fundo (Backgrounds) */
+  --cor-fundo-principal: #121417;     /* Cinza quase preto, bem profissional */
+  --cor-fundo-card: #1e2126;          /* Um cinza um pouco mais claro para destacar os campos */
+  
+  /* Cores de Destaque (Acentos) */
+  --cor-destaque: #f5b016;            /* Amarelo Ouro/Segurança - Cor de atenção e precisão */
+  --cor-destaque-hover: #d49812;      /* Um pouco mais escuro para o efeito de passar o mouse */
+  
+  /* Cores de Texto */
+  --cor-texto-titulo: #ffffff;        /* Branco puro para títulos */
+  --cor-texto-padrao: #c5c6c7;        /* Cinza claro para leitura confortável */
+  --cor-texto-label: #9ea0a3;         /* Cinza médio para as labels (nomes dos campos) */
+
+  /* Cores de Estado (Status) */
+  --cor-sucesso: #28a745;             /* Verde para quando salvar o produto */
+  --cor-borda: #343a40;               /* Cor para as bordas dos inputs e fieldset */
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+body {
+    background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto-padrao);
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    color: var(--cor-destaque);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/*============================= Layout ==============================*/
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container-cadastro-consulta {
+    margin-top: 20px;
+    background-color: var(--cor-fundo-card);
+    width: 60vw; 
+    min-height: 80vh;
+    border-radius: 8px;
+    overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+}
+
+.conteudo-resposta{
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-resultado-inventario{
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 50px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--cor-destaque);
+    border-radius: 5px;
+    color: var(--cor-texto); 
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.2); 
+}
+
+/*============================= Navegação ==============================*/
+.nav-list {
+    background-color: #16191d; 
+    display: flex;
+    width: 100%; 
+    height: 60px;
+}
+
+.nav-list span {
+    flex: 1; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-texto-label);
+    font-weight: bold;
+    border-bottom: 2px solid transparent;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.nav-list span:hover {
+    color: var(--cor-destaque);
+    background-color: rgba(245, 176, 22, 0.05);
+}
+
+.nav-list span.active { 
+    color: var(--cor-destaque);
+    background-color: var(--cor-fundo-card);
+}
+
+/*============================= Formulário ==============================*/
+fieldset {
+    border: 1px solid var(--cor-borda);
+    padding: 30px;
+    margin: 30px;
+    width: 90%; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+}
+
+.campos-material{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+legend {
+    color: var(--cor-destaque);
+    font-weight: bold;
+}
+
+label {
+    color: var(--cor-texto-label);
+    font-size: 0.9rem;
+    margin-bottom: -10px; 
+}
+
+select, input {
+    background-color: var(--cor-fundo-principal);
+    border: 1px solid var(--cor-borda);
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    
+}
+
+select:focus, input:focus {
+    border-color: var(--cor-destaque);
+}
+
+button {
+    margin-top: 10px;
+    background-color: var(--cor-destaque);
+    color: var(--cor-fundo-principal);
+    border: none;
+    padding: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: var(--cor-destaque-hover);
+    transform: translatey(-2px);
+}
+/*============================= Animações ==============================*/
+@keyframes pulsar {
+    0% {
+        transform: scale(1); /* Tamanho original */
+    }
+    50% {
+        transform: scale(1.01); /* Aumenta 5% */
+    }
+    100% {
+        transform: scale(1); /* Volta ao normal */
+    }
+}
+
+.conteudo-resposta:not(.hidden) {
+    animation: pulsar 2s ease-in-out infinite; 
+    /* 'infinite' faz ela ficar pulsando sem parar! */
+}
+
+/*============================= Mobile ==============================*/
+@media (max-width: 768px) {
+    form fieldset {
+        margin: 10px 10px;
+        border-radius: 5px;
+    }
+    
+    .main-container, .container-cadastro-consulta {
+        width: 100%;      
+        padding: 10px; 
+    }
+
+    
+    input, select{  
+        height: 45px;      
+        font-size: 15px;  
+        margin-bottom: 5px;
+        box-sizing: border-box;
+    }
+
+
+}
