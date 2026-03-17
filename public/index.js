@@ -1,19 +1,18 @@
-/* ==========================================================================
-   CONFIGURAÇÃO INICIAL E CARREGAMENTO DE DADOS
-========================================================================== */
-const formulario = document.getElementById('form-cadastro');
-let inventario = [];
+
 /* ==========================================================================
    NAVEGAÇÃO ENTRE ABAS (CADASTRO VS CONSULTA)
 ========================================================================== */
 const cadastro = document.getElementById('btn-cadastro');
 const consulta = document.getElementById('btn-consulta');
+const conteudoResposta = document.querySelector('.conteudo-resposta');
 
 cadastro.addEventListener('click', () => {
     document.getElementById('aba-consulta').classList.add('hidden');
     document.getElementById('aba-cadastro').classList.remove('hidden');
     consulta.classList.remove('active');
     cadastro.classList.add('active');
+    conteudoResposta.classList.add('hidden');
+
 });
 
 consulta.addEventListener('click', () => {
@@ -54,11 +53,14 @@ const mostraCamposConsulta = () => {
         if (elemento) elemento.classList.remove('hidden');
     }
 };
-document.getElementById('consultaItem').addEventListener('change', mostraCamposConsulta);
+document.getElementById('consultaItem').addEventListener('change', mostraCamposConsulta, conteudoResposta.classList.add('hidden'));
+
 
 /* ==========================================================================
-   PROCESSAMENTO DO FORMULÁRIO E PERSISTÊNCIA (SALVAR)
+   PROCESSAMENTO DO FORMULÁRIO 
 ========================================================================== */
+const formulario = document.getElementById('form-cadastro');
+
 formulario.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -117,9 +119,6 @@ formulario.addEventListener('submit', async (event) => {
 /* ========================================================================== 
     SISTEMA DE BUSCA E EXIBIÇÃO (CONSULTA) 
 ========================================================================== */
-/* ========================================================================== 
-    SISTEMA DE BUSCA E EXIBIÇÃO (CONSULTA) 
-========================================================================== */
 const btnConsulta = document.getElementById('btn-pesquisar');
 
 btnConsulta.addEventListener('click', async () => {
@@ -127,15 +126,12 @@ btnConsulta.addEventListener('click', async () => {
     const resultadoInventario = document.getElementById('container-resultados-lista');
     let tipoItem;
 
-    resultadoInventario.innerHTML = 'Pesquisando...';
 
     if (itemConsulta != '') {
         try {
 
             const resposta = await fetch('/produtos');
             const inventarioDoBanco = await resposta.json();
-
-            const conteudoResposta = document.querySelector('.conteudo-resposta');
 
             if (itemConsulta === 'broca') {
                 tipoItem = document.getElementById('consultaTipoQuantidadeBroca').value;
@@ -154,6 +150,7 @@ btnConsulta.addEventListener('click', async () => {
             }, 0);
 
             resultadoInventario.innerHTML = `
+                <p><strong>item:</strong> ${itemConsulta}</p>
                 <p><strong>Tipo:</strong> ${tipoItem}</p>
                 <p><strong>Total em Estoque:</strong> ${quantidadeTotal}</p>
                 ${itensEncontrados[0]?.diametro > 0 ? `<p><strong>Diâmetro:</strong> ${itensEncontrados[0].diametro}mm</p>` : ''}
