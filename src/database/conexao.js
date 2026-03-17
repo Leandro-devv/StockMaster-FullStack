@@ -8,8 +8,7 @@ const conexao = mysql.createPool({
     database: process.env.DB_NAME,
     port: process.env.DB_PORT || 3306,
     waitForConnections: true,
-    connectionLimit: 3,
-    queueLimit: 0
+    connectionLimit: 3
 });
 
 export default conexao;
